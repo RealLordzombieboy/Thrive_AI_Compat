@@ -1,3 +1,13 @@
+
+FOR CISC 352: AI files are contained within AI Player folder.
+
+
+
+
+
+
+
+
 Thrive
 ======
 

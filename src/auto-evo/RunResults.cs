@@ -430,6 +430,7 @@ public class RunResults : IArchivable
 
     public void ApplyResults(GameWorld world, bool skipMutations)
     {
+        
         foreach (var entry in results)
         {
             if (entry.Value.NewlyCreated != null)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO; // ***
 using System.Linq;
+using System.Reflection;
 using Godot;
 using SharedBase.Archive;
 using Systems;
@@ -301,6 +303,18 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
 
         if (!IsLoadedFromSave)
             TutorialState.SendEvent(TutorialEventType.EnteredMicrobeEditor, EventArgs.Empty, this);
+        // *** My modifications below.
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", "\nCurrent Data:\nCompounds:\n");
+        foreach (KeyValuePair<Compound, BiomeCompoundProperties> pair in CurrentPatch.Biome.Compounds)
+            File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"{pair.Key}: {pair.Value}\n");
+        CurrentPatch.Biome.TryGetCompound(Compound.Iron, CompoundAmountType.Biome, out var result);
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"Iron: Amount: {result.Amount} ({result.Density} density), ambient: {result.Ambient}\n"); // Ambient gives 0 here, too.
+        // Microbe Info:
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", "\nCurrent Microbe Info:\n");
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"Speed: {GetPlayerDataSource().Speed}\n");
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Production: {GetPlayerDataSource().EnergyBalance.TotalProduction}\n");
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption}\n");
+        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Consumption (movement): {GetPlayerDataSource().EnergyBalance.TotalMovement}\n");
     }
 
     protected override void UpdateHistoryCallbackTargets(ActionHistory<EditorAction> actionHistory)

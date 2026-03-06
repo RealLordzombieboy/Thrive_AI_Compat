@@ -619,7 +619,7 @@ public sealed partial class MicrobeStage : CreatureStageBase<Entity, MicrobeWorl
     }
 
     /// <summary>
-    ///   Switches to the editor
+    ///   Switches to the editor ***
     /// </summary>
     public override void MoveToEditor()
     {
@@ -689,6 +689,7 @@ public sealed partial class MicrobeStage : CreatureStageBase<Entity, MicrobeWorl
         }
 
         MovingToEditor = false;
+        
     }
 
     /// <summary>

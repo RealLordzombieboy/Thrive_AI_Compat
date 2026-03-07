@@ -5,15 +5,16 @@ import numpy as np
 pyautogui.FAILSAFE = True # Move mouse to top left of screen to automatically stop.
 pyautogui.PAUSE = 0.25 # Minimum time between each pyautogui action
 
-# Function to get from played microbe stage to editor
+# Function to get from played microbe stage to editor.
 def to_editor():
     pyautogui.click(3550, 1857) # Click button to go to editor
-    # Check for if log file is updated.
-    time.sleep(2) # Temp
+    time.sleep(2) # Temp. TODO: Need to find way to know when loading screen is over. ***
     pyautogui.click(3606, 2071) # Skip first page
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
-# Function to confirm current generation and get to next generation (i.e. end current editor round, move to next)
+# Function to get from editor to played microbe stage.
+def to_active_stage():
+    pyautogui.click(3606, 2071)
 
 # Function to select different cell parts. Takes string of what part to select.
 def select_part(organelle: str):
@@ -66,8 +67,8 @@ def select_part(organelle: str):
         pyautogui.scroll(400, 206, 1676) # Scroll back to reset location on organelle list.
     else:
         raise ValueError(f"Organelle \"{organelle}\" not known.")
-# Function to add part in a spiral around current cell.
 
+# Function to add part in a spiral around current cell.
 def add_part(num_placed: int, place_rotation: float):
     center = [1920, 1080]
     place_position = center
@@ -99,6 +100,11 @@ def test_position():
 # PLANNING:
 
 def planner_AI():
+    # for 30 generations:
+    # Get to editor
+    # Give current data to planning agent
+    # Run planning agent
+    # Make actions agent makes (Actions in the PDDL file are 1:1 with actions we take in game.)
     pass
 
 # BAYES NETS:

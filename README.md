@@ -1,7 +1,7 @@
 
 FOR CISC 352: AI files are contained within AI Player folder.
 
-
+PDDL uses ENHSP numeric planner, which requires JAVA 15.
 
 
 

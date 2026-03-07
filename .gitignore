@@ -86,6 +86,9 @@ $tf*/
 *.lib
 *.a
 
+# .venv Virtual Environment:
+AI Player/.venv/
+
 # Shared objects (inc. Windows DLLs)
 *.dll
 *.so

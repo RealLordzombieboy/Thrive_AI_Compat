@@ -1,6 +1,7 @@
 import pyautogui
 import time
 import numpy as np
+import csv
 
 pyautogui.FAILSAFE = True # Move mouse to top left of screen to automatically stop.
 pyautogui.PAUSE = 0.25 # Minimum time between each pyautogui action
@@ -11,6 +12,32 @@ def to_editor():
     time.sleep(2) # Temp. TODO: Need to find way to know when loading screen is over. ***
     pyautogui.click(3606, 2071) # Skip first page
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
+
+# Converts log.txt file to a csv file for ease of use.
+def convert_to_csv():
+    data = [["Name", "Amount"]]
+    key_words1 = ["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Production", "Consumption", "Iron"]
+    key_words2 = ["Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature"]
+
+    # Fill data with csv-formated data from log.txt:
+    with open("C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt", 'r') as file:
+        for line in file:
+            split = line.split(' ')
+            if split[0] == "ATP":
+                current = split[1][:-1] # ATP has end of name in second column, the rest are first column.
+            else:
+                current = split[0][:-1] # [:-1] removes colon
+            if current == "Speed":
+                data.append([current, split[1]]) # Speed has data in second column.
+            elif current in key_words1:
+                data.append([current, split[2]]) # Primary data in amount or is ATP-related.
+            elif current in key_words2:
+                data.append([current, split[6]]) # Primary data in ambient.
+    
+    # Convert data into csv file:
+    with open("C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
 
 # Function to get from editor to played microbe stage.
 def to_active_stage():
@@ -118,14 +145,15 @@ def deep_learning_AI():
     pass
 
 if __name__ == "__main__":
-    # test_position()
-    time.sleep(3)
-    #to_editor()
-    select_part("flagellum")
-    num_placed = 0 # Initial is 0 parts placed.
-    place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.
+    convert_to_csv()
+    # # test_position()
+    # time.sleep(3)
+    # #to_editor()
+    # select_part("flagellum")
+    # num_placed = 0 # Initial is 0 parts placed.
+    # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.
     
-    num_placed, place_rotation = add_part(num_placed, place_rotation)
+    # num_placed, place_rotation = add_part(num_placed, place_rotation)
 
 # List of locations:
 # Point(x=3550, y=1857): Editor button

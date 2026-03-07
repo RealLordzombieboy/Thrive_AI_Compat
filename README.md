@@ -3,6 +3,8 @@ FOR CISC 352: AI files are contained within AI Player folder.
 
 PDDL uses ENHSP numeric planner, which requires JAVA 15.
 
+For logs to work please go to "...\Thrive_AI_Compat\src\microbe_stage\editor\MicrobeEditor.cs" and replace line 307 'var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt";' with your location of the project (i.e. replace "C:/GitHub Projects" with your location of Thrive_AI_Compat.)
+
 
 
 

@@ -304,17 +304,18 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         if (!IsLoadedFromSave)
             TutorialState.SendEvent(TutorialEventType.EnteredMicrobeEditor, EventArgs.Empty, this);
         // *** My modifications below.
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", "\nCurrent Data:\nCompounds:\n");
+        var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt"; // Change this to where your Thrive_AI_Compat is located.
+        File.WriteAllText(location, "Compounds:\n");
         foreach (KeyValuePair<Compound, BiomeCompoundProperties> pair in CurrentPatch.Biome.Compounds)
-            File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"{pair.Key}: {pair.Value}\n");
+            File.AppendAllText(location, $"{pair.Key}: {pair.Value} \n"); // Space needed at end for .csv conversion.
         CurrentPatch.Biome.TryGetCompound(Compound.Iron, CompoundAmountType.Biome, out var result);
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"Iron: Amount: {result.Amount} ({result.Density} density), ambient: {result.Ambient}\n"); // Ambient gives 0 here, too.
+        File.AppendAllText(location, $"Iron: Amount: {result.Amount} ({result.Density} density), ambient: {result.Ambient}\n"); // Ambient gives 0 here, too.
         // Microbe Info:
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", "\nCurrent Microbe Info:\n");
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"Speed: {GetPlayerDataSource().Speed}\n");
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Production: {GetPlayerDataSource().EnergyBalance.TotalProduction}\n");
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption}\n");
-        File.AppendAllText("C:/Users/lordz/OneDrive/Documents/Thrive AI/Log.txt", $"ATP Consumption (movement): {GetPlayerDataSource().EnergyBalance.TotalMovement}\n");
+        File.AppendAllText(location, "\nCurrent Microbe Info:\n");
+        File.AppendAllText(location, $"Speed: {GetPlayerDataSource().Speed} \n");
+        File.AppendAllText(location, $"ATP Production: {GetPlayerDataSource().EnergyBalance.TotalProduction} \n");
+        // Movement cost is negative while consumption positive, so need to subtract movement from TotalConsumption for total consumption.
+        File.AppendAllText(location, $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption - GetPlayerDataSource().EnergyBalance.TotalMovement} ");
     }
 
     protected override void UpdateHistoryCallbackTargets(ActionHistory<EditorAction> actionHistory)

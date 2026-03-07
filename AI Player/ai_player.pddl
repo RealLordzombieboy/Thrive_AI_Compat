@@ -1,9 +1,19 @@
 (define (domain ai-player)
     (:requirements :typing :fluents)
-    (:functions ; Functions are numerical values that can change over time, compared to predicates which are just True/False.
+
+    (:predicates
+        (selected ?organelle)
+    )
+
+    ; Functions are numerical values that can change over time, compared to predicates which are just True/False.
+    (:functions 
         (produced ?p -atp)
         (consumed ?c -atp)
     )
+)
+
+(define (problem ai-player-editor)
+    (:domain ai-player)
     (:objects
         atp
     )

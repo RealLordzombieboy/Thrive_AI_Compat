@@ -1,0 +1,3 @@
+Bayes Nets needs to be able to learn off of previous data. So it has something to work off of I need to include what parts are on the micro-organism during each run.
+
+Each run is done on the same starting seed/initial save file for easy comparisons and training.

@@ -1,14 +1,2 @@
-Name,Amount
-Ammonia,249346.2
-Glucose,120759.99
-Phosphates,240895.92
-Hydrogensulfide,240328.78
-Oxygen,0
-Carbondioxide,0.43346184
-Nitrogen,0.5046037
-Sunlight,0
-Temperature,98
-Iron,0
-Speed,36.43162
-Production,2.4
-Consumption,2
+Ammonia,Glucose,Phosphates,Hydrogensulfide,Oxygen,Carbondioxide,Nitrogen,Sunlight,Temperature,Iron,Speed,ATP Consumption,ATP Production,cytoplasm,hydrogenase,metabolosomes,thylakoids,chemosynthesizing proteins,rusticyanin,nitrogenase,toxisome,flagellum,perforator pilus,chemoreceptor,slime jet
+249346.2,120759.99,240895.92,240328.78,0,0.43346184,0.5046037,0,98,0,36.43162,2.4,2,1,0,0,0,0,0,0,0,0,0,0,0

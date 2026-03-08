@@ -2,6 +2,7 @@ import pyautogui
 import time
 import numpy as np
 import csv
+import os
 
 pyautogui.FAILSAFE = True # Move mouse to top left of screen to automatically stop.
 pyautogui.PAUSE = 0.25 # Minimum time between each pyautogui action
@@ -14,13 +15,16 @@ def to_editor():
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
 # Converts log.txt file to a csv file for ease of use.
-def convert_to_csv():
-    data = [["Name", "Amount"]]
+def convert_to_csv(added: list[str]):
+    data = [["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature", "Iron", "Speed", "ATP Consumption", "ATP Production",
+             "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]]
     key_words1 = ["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Production", "Consumption", "Iron"]
     key_words2 = ["Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature"]
 
     # Fill data with csv-formated data from log.txt:
-    with open("C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt", 'r') as file:
+    __location__ = os.path.realpath(os.path.dirname(__file__))
+    current_data = []
+    with open(__location__ + "/log.txt", 'r') as file:
         for line in file:
             split = line.split(' ')
             if split[0] == "ATP":
@@ -28,14 +32,48 @@ def convert_to_csv():
             else:
                 current = split[0][:-1] # [:-1] removes colon
             if current == "Speed":
-                data.append([current, split[1]]) # Speed has data in second column.
+                current_data.append(split[1]) # Speed has data in second column.
             elif current in key_words1:
-                data.append([current, split[2]]) # Primary data in amount or is ATP-related.
+                current_data.append(split[2]) # Primary data in amount or is ATP-related.
             elif current in key_words2:
-                data.append([current, split[6]]) # Primary data in ambient.
+                current_data.append(split[6]) # Primary data in ambient.
+    
+    # Count how many of each organelle are currently on the micro-organism:
+    organelle_count = [0]*12
+    for organelle in added:
+        if organelle == "cytoplasm":
+            organelle_count[0] += 1
+        elif organelle == "hydrogenase":
+            organelle_count[1] += 1
+        elif organelle == "metabolosomes":
+            organelle_count[2] += 1
+        elif organelle == "thylakoids":
+            organelle_count[3] += 1
+        elif organelle == "chemosynthesizing proteins":
+            organelle_count[4] += 1
+        elif organelle == "rusticyanin":
+            organelle_count[5] += 1
+        elif organelle == "nitrogenase":
+            organelle_count[6] += 1
+        elif organelle == "toxisome":
+            organelle_count[7] += 1
+        elif organelle == "flagellum":
+            organelle_count[8] += 1
+        elif organelle == "perforator pilus":
+            organelle_count[9] += 1
+        elif organelle == "chemoreceptor":
+            organelle_count[10] += 1
+        elif organelle == "slime jet":
+            organelle_count[11] += 1
+
+    # Add to current data:
+    for i in organelle_count:
+        current_data.append(i)
+    
+    data.append(current_data)
     
     # Convert data into csv file:
-    with open("C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.csv", 'w', newline='') as file:
+    with open(__location__ + "/log.csv", 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerows(data)
 
@@ -145,10 +183,10 @@ def deep_learning_AI():
     pass
 
 if __name__ == "__main__":
-    convert_to_csv()
     # # test_position()
     # time.sleep(3)
-    # #to_editor()
+    # # to_editor()
+    convert_to_csv(["cytoplasm"]) # Initial micro-organism starts with one cytoplasm.
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

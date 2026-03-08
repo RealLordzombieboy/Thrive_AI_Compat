@@ -15,12 +15,15 @@ def to_editor():
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
 # Converts log.txt file to a csv file for ease of use.
-def convert_to_csv(added: list[str], ai_type: str, new: bool):
+"""
+@param added: Integer count of organelles currently on microbe (0 if none.)
+Order is: "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet".
+Must be exactly 12 integers long.
+"""
+def convert_to_csv(organelle_count: list[int], ai_type: str, new: bool):
     if new == True:
         data = [["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature", "Iron", "Speed", "ATP Production", "ATP Consumption", "Population",
                 "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]]
-    key_words1 = ["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Production", "Consumption", "Iron"]
-    key_words2 = ["Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature"]
 
     # Fill data with csv-formated data from log.txt:
     __location__ = os.path.realpath(os.path.dirname(__file__))
@@ -28,56 +31,20 @@ def convert_to_csv(added: list[str], ai_type: str, new: bool):
     with open(__location__ + "/log.txt", 'r') as file:
         for line in file:
             split = line.split(' ')
-            if split[0] == "ATP":
-                current = split[1][:-1] # ATP has end of name in second column, the rest are first column.
-            else:
-                current = split[0][:-1] # [:-1] removes colon
-            if current == "Speed" or current == "Population":
-                current_data.append(split[1]) # Only Speed and Population have data in second column.
-            elif current in key_words1:
-                current_data.append(split[2]) # Primary data in amount or is ATP-related.
-            elif current in key_words2:
-                current_data.append(split[6]) # Primary data in ambient.
-    
-    # Count how many of each organelle are currently on the micro-organism:
-    organelle_count = [0]*12
-    for organelle in added:
-        if organelle == "cytoplasm":
-            organelle_count[0] += 1
-        elif organelle == "hydrogenase":
-            organelle_count[1] += 1
-        elif organelle == "metabolosomes":
-            organelle_count[2] += 1
-        elif organelle == "thylakoids":
-            organelle_count[3] += 1
-        elif organelle == "chemosynthesizing proteins":
-            organelle_count[4] += 1
-        elif organelle == "rusticyanin":
-            organelle_count[5] += 1
-        elif organelle == "nitrogenase":
-            organelle_count[6] += 1
-        elif organelle == "toxisome":
-            organelle_count[7] += 1
-        elif organelle == "flagellum":
-            organelle_count[8] += 1
-        elif organelle == "perforator pilus":
-            organelle_count[9] += 1
-        elif organelle == "chemoreceptor":
-            organelle_count[10] += 1
-        elif organelle == "slime jet":
-            organelle_count[11] += 1
+            if split[0] != "Compounds:\n" and split[0] != "Current" and split[0] != "\n": # Avoid headers
+                current_data.append(split[1])
 
     # Add to current data:
     for i in organelle_count:
         current_data.append(i)
     
-    if new == True:
+    if new == True: # Start csv file from scratch.
         data.append(current_data)
         # Convert data into csv file:
         with open(__location__ + "/" + ai_type + "_log.csv", 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(data)
-    else:
+    else: # Append to current csv file data.
         data = [current_data]
         # Convert data into csv file:
         with open(__location__ + "/" + ai_type + "_log.csv", 'a', newline='') as file:
@@ -195,7 +162,7 @@ if __name__ == "__main__":
     # test_position() # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
-    convert_to_csv(["cytoplasm"], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
+    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

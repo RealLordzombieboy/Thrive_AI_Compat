@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO; // ***
 using System.Linq;
 using System.Reflection;
+using Arch.Core;
 using AutoEvo;
 using Godot;
 using SharedBase.Archive;
@@ -307,15 +308,20 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         // *** My modifications below.
         var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt"; // Change this to where your Thrive_AI_Compat is located.
         File.WriteAllText(location, "Compounds:\n");
-        foreach (KeyValuePair<Compound, BiomeCompoundProperties> pair in CurrentPatch.Biome.Compounds)
-            File.AppendAllText(location, $"{pair.Key}: {pair.Value} \n"); // Space needed at end for .csv conversion.
-        CurrentPatch.Biome.TryGetCompound(Compound.Iron, CompoundAmountType.Biome, out var result);
-        File.AppendAllText(location, $"Iron: Amount: {result.Amount} ({result.Density} density), ambient: {result.Ambient}\n"); // Ambient gives 0 here, too.
-        // Microbe Info:
+        File.AppendAllText(location, $"Ammonia: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Ammonia)} \n");
+        File.AppendAllText(location, $"Glucose: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Glucose)} \n");
+        File.AppendAllText(location, $"Phosphates: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Phosphates)} \n");
+        File.AppendAllText(location, $"Hydrogensulfide: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Hydrogensulfide)} \n");
+        File.AppendAllText(location, $"Oxygen: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Oxygen)} \n");
+        File.AppendAllText(location, $"Carbondioxide: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Carbondioxide)} \n");
+        File.AppendAllText(location, $"Nitrogen: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Nitrogen)} \n");
+        File.AppendAllText(location, $"Sunlight: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Sunlight)} \n");
+        File.AppendAllText(location, $"Temperature: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Temperature)} \n");
+        File.AppendAllText(location, $"Iron: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Iron)} \n");
         File.AppendAllText(location, "\nCurrent Microbe Info:\n");
         File.AppendAllText(location, $"Speed: {GetPlayerDataSource().Speed} \n");
-        File.AppendAllText(location, $"ATP Production: {GetPlayerDataSource().EnergyBalance.TotalProduction} \n");
-        File.AppendAllText(location, $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption + GetPlayerDataSource().EnergyBalance.BaseMovement} \n");
+        File.AppendAllText(location, $"ATP-Production: {GetPlayerDataSource().EnergyBalance.TotalProduction} \n");
+        File.AppendAllText(location, $"ATP-Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption + GetPlayerDataSource().EnergyBalance.BaseMovement} \n");
         RunResults.NewGeneration = true; // Allows RunResults to add the player's current population to the log once.
     }
 

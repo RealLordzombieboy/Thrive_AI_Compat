@@ -88,7 +88,7 @@ current_organelles[best_organelle_num] += 1
 Thrive_AI.to_active_stage()
 time.sleep(5)
 
-for i in range(7):
+for i in range(5):
     Thrive_AI.to_editor()
     Thrive_AI.convert_to_csv(current_organelles, "bayes_net", False)
 

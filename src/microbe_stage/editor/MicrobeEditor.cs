@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO; // ***
 using System.Linq;
 using System.Reflection;
+using AutoEvo;
 using Godot;
 using SharedBase.Archive;
 using Systems;
@@ -314,8 +315,8 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         File.AppendAllText(location, "\nCurrent Microbe Info:\n");
         File.AppendAllText(location, $"Speed: {GetPlayerDataSource().Speed} \n");
         File.AppendAllText(location, $"ATP Production: {GetPlayerDataSource().EnergyBalance.TotalProduction} \n");
-        // Movement cost is negative while consumption positive, so need to subtract movement from TotalConsumption for total consumption.
-        File.AppendAllText(location, $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption - GetPlayerDataSource().EnergyBalance.TotalMovement} ");
+        File.AppendAllText(location, $"ATP Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption + GetPlayerDataSource().EnergyBalance.BaseMovement} \n");
+        RunResults.NewGeneration = true; // Allows RunResults to add the player's current population to the log once.
     }
 
     protected override void UpdateHistoryCallbackTargets(ActionHistory<EditorAction> actionHistory)

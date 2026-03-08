@@ -1,3 +1,13 @@
 Bayes Nets needs to be able to learn off of previous data. So it has something to work off of I need to include what parts are on the micro-organism during each run.
+So the Bayes Net has something to work with, I will run the first generation 12 times adding one of each organelle the Bayes Net can select in each respective generation, then add them to the log.csv.
+
+Added current population to log output so AI algorithms have more to work off of rather than just more ATP consumed than produced == bad, more ATP produced than consumed == good.
 
 Each run is done on the same starting seed/initial save file for easy comparisons and training.
+
+BUGS FOUND:
+Functions in Thrive do not seem to be able to account for Flagella Movement ATP cost. (GetPlayerDataSource().EnergyBalance.Flagella, GetPlayerDataSource().EnergyBalance.TotalMovement, and GetPlayerDataSource().EnergyBalance.TotalConsumption all
+do not consider it. At most TotalMovement considers the 2 base movement cost, but that is all.)
+
+TODO AFTER DEMO:
+1. Fix iron log output being stuck at 0.

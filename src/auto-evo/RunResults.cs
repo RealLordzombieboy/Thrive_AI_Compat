@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO; // ***
 using System.Linq;
 using Godot;
 using SharedBase.Archive;
@@ -17,6 +18,7 @@ using SharedBase.Archive;
 /// </remarks>
 public class RunResults : IArchivable
 {
+    public static bool NewGeneration = true; // *** Added so population is only added once per generation.
     public const ushort SERIALIZATION_VERSION = 1;
 
     /// <summary>
@@ -145,6 +147,13 @@ public class RunResults : IArchivable
         MakeSureResultExistsForSpecies(species);
 
         results[species].NewPopulationInPatches[patch] = Math.Max(newPopulation, 0);
+        // *** My modifications below to keep track of player population:
+        var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt";
+        if (species.PlayerSpecies && NewGeneration)
+        {
+            File.AppendAllText(location, $"Population: {species.Population} \n");
+            NewGeneration = false;
+        }
     }
 
     public void AddMigrationResultForSpecies(Species species, SpeciesMigration migration)

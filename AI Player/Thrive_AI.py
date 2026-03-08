@@ -162,7 +162,8 @@ if __name__ == "__main__":
     # test_position() # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
-    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
+    #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
+    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], "bayes_net", False) # DEBUG
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

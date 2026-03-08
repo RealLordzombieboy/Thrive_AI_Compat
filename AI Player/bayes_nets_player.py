@@ -1,16 +1,45 @@
 import pandas as pd
 from pgmpy.models import LinearGaussianBayesianNetwork
-from pgmpy.models import BayesianNetwork
-from pgmpy.factors.continuous import LinearGaussianCPD
-from pgmpy.estimators import ParameterEstimator # For training
-from pgmpy.estimators import MaximumLikelihoodEstimator
+# from pgmpy.models import BayesianNetwork
+# from pgmpy.factors.continuous import LinearGaussianCPD
+# from pgmpy.estimators import ParameterEstimator # For training
+# from pgmpy.estimators import MaximumLikelihoodEstimator
 import os
+import Thrive_AI
+import time
 
 # IMPORTANT: Will need to run this many times to train the model.
-# Final value will state what it selected in the previous run or current run?
+# Final value will state what it selected in the previous run or current run? -- Current run, ish, unfortunately.
+
+def best_organelle_calc(current_data):
+    organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]
+    organelle_prediction = []
+    for i in range(12):
+        df = current_data.drop(columns=organelles[i])
+        organelle_prediction.append(model.predict(df))
+
+    best_num = -2147483648 # Negative integer limit
+    best_organelle = "N/A"
+    best_organelle_num = 0
+    for i in range(len(organelle_prediction)):
+        val = organelle_prediction[i][1][0][0]
+        #print(val) # DEBUG
+        if val > best_num:
+            best_num = val
+            best_organelle = organelle_prediction[i][0][0]
+            best_organelle_num = i
+    
+    if best_organelle == "N/A":
+        raise RuntimeError("No best Organelle found. Organelles: {organelle_prediction}")
+
+    return best_organelle, best_organelle_num
 
 # Initialization:
-#model = LinearGaussianBayesianNetwork()
+
+# WARNING: Ensure cheats are enabled, press F6, turn on Unlimited Resources and Infinite Growth Speed before running this program.
+time.sleep(3) # So user can quickly re-enter Thrive environment before mouse control is taken.
+Thrive_AI.to_editor()
+
 # Create model with connections between nodes:
 model = LinearGaussianBayesianNetwork([("ATP Production", "Population"), ("ATP Consumption", "Population"), ("Speed", "Population"), # Base direct impacts on Population
                          # ATP Production and Consumption:
@@ -27,42 +56,61 @@ model = LinearGaussianBayesianNetwork([("ATP Production", "Population"), ("ATP C
                          ("perforator pilus", "Speed"), ("chemoreceptor", "Speed"),
                          # Compounds effects on Organelles (more of the corresponding compound means organelle more effective):
                          ("Glucose", "cytoplasm"), ("Glucose", "hydrogenase"), ("Glucose", "chemosynthesizing proteins"), ("Glucose", "nitrogenase"), ("Glucose", "toxisome"),
-                         ("Carbondioxide", "thylakoids"), ("Iron", "rusticyanin"), ("Hydrogensulfide", "chemosynthesizing proteins"), ("Oxygen", "metabolosomes"), ("Sunlight", "thylakoids"),
+                         ("Carbondioxide", "thylakoids"),  ("Hydrogensulfide", "chemosynthesizing proteins"), #("Iron", "rusticyanin"), ("Oxygen", "metabolosomes"), ("Sunlight", "thylakoids"), # Iron, Oxygen and Sunlight do not change in initial dataset.
                          ("Carbondioxide", "chemosynthesizing proteins"), ("Nitrogen", "nitrogenase"),
                          # Ammonia and Phosphates have a direct effect on Population, as that is what is required to reproduce.
-                         ("Ammonia", "Population"), ("Phosphates", "Population")
+                         ("Ammonia", "Population"), #("Phosphates", "Population") # Phosphates do not change in initial dataset.
                          ])
 
 # Read current log.csv:
 __location__ = os.path.realpath(os.path.dirname(__file__))
 data = pd.read_csv(__location__ + "/bayes_net_log.csv")
-
-#data.drop(columns=["Iron", "Temperature", "Sunlight", "Oxygen", "Glucose", "Phosphates", "Hydrogensulfide", "Ammonia"], inplace=True) # Drop unchanging values in dataset.
-
+data.drop(columns=["Temperature", "Sunlight", "Oxygen", "Phosphates", "Iron"], inplace=True) # Drop unchanging values in dataset.
 model.fit(data)
-#print(model.get_cpds())
+#print(model.get_cpds()) # DEBUG
 
 # Predict which organelle to select:
 current_data = data.iloc[[0]] # Get just the header and initial data.
-organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]
-organelle_prediction = []
-for i in range(12):
-    df = current_data.drop(columns=organelles[i])
-    organelle_prediction.append(model.predict(df))
 
-best_num = -2147483648 # Negative integer limit
-best_organelle = "N/A"
-for organelle in organelle_prediction:
-    val = organelle[1][0][0]
-    print(val) # DEBUG
-    if val > best_num:
-        best_num = val
-        best_organelle = organelle[0][0]
+# Force Bayes Net to pick something that increases its population (Did not work, output still the same.)
+# current_data.at[0, "Population"] = current_data["Population"].iloc[0] * 2
 
-if best_organelle == "N/A":
-    raise RuntimeError("No best Organelle found. Organelles: {organelle_prediction}")
+# Calculate what organelle to add first:
+best_organelle, best_organelle_num = best_organelle_calc(current_data)
 
-print(best_organelle)
+place_rotation = 225
+num_placed = 0
+current_organelles = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Thrive_AI.select_part(best_organelle)
+num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+current_organelles[best_organelle_num] += 1
+
+Thrive_AI.to_active_stage()
+
+for i in range(7):
+    Thrive_AI.to_editor()
+    Thrive_AI.convert_to_csv(current_organelles, "bayes_net", False)
+
+    data = pd.read_csv(__location__ + "/bayes_net_log.csv")
+    data.drop(columns=["Temperature", "Sunlight", "Oxygen", "Phosphates", "Iron"], inplace=True) # Drop unchanging values in dataset.
+    model.fit(data)
+    #print(model.get_cpds()) # DEBUG
+
+    # Predict which organelle to select:
+    current_data = data.iloc[[0]] # Get just the header and initial data.
+
+    # Force Bayes Net to pick something that increases its population (Did not work, output still the same.)
+    # current_data.at[0, "Population"] = current_data["Population"].iloc[0] * 2
+
+    # Calculate what organelle to add:
+    best_organelle, best_organelle_num = best_organelle_calc(current_data)
+    Thrive_AI.select_part(best_organelle)
+    num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+    current_organelles[best_organelle_num] += 1
+
+    Thrive_AI.to_active_stage()
+
+Thrive_AI.to_editor() # So it ends in the editor.
 
 # Estimate based on data:
 #estimate = ParameterEstimator(model, data)

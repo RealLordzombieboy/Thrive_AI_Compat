@@ -9,5 +9,7 @@ BUGS FOUND:
 Functions in Thrive do not seem to be able to account for Flagella Movement ATP cost. (GetPlayerDataSource().EnergyBalance.Flagella, GetPlayerDataSource().EnergyBalance.TotalMovement, and GetPlayerDataSource().EnergyBalance.TotalConsumption all
 do not consider it. At most TotalMovement considers the 2 base movement cost, but that is all.)
 
+Bayes Nets player AI seems to guess how many organelles of each type should be a part of the micro-organism in that generation, not which it should select for the next. This makes complete sense, but also poses a clear problem I will have to solve after the DEMO.
+
 TODO AFTER DEMO:
-1. Fix iron log output being stuck at 0.
+1. Fix Bayes Nets logical error that causes it to state the quantities of how many organelles should be selected of each type in the current generation and not what to add for the next generation.

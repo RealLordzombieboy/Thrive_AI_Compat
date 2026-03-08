@@ -86,6 +86,7 @@ num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
 current_organelles[best_organelle_num] += 1
 
 Thrive_AI.to_active_stage()
+time.sleep(5)
 
 for i in range(7):
     Thrive_AI.to_editor()
@@ -97,18 +98,21 @@ for i in range(7):
     #print(model.get_cpds()) # DEBUG
 
     # Predict which organelle to select:
-    current_data = data.iloc[[0]] # Get just the header and initial data.
+    current_data = data.iloc[[len(data) - 1]] # Get just the header and most recent data.
 
     # Force Bayes Net to pick something that increases its population (Did not work, output still the same.)
     # current_data.at[0, "Population"] = current_data["Population"].iloc[0] * 2
 
     # Calculate what organelle to add:
     best_organelle, best_organelle_num = best_organelle_calc(current_data)
+    time.sleep(2)
     Thrive_AI.select_part(best_organelle)
+    time.sleep(2)
     num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
     current_organelles[best_organelle_num] += 1
-
+    time.sleep(2)
     Thrive_AI.to_active_stage()
+    time.sleep(5)
 
 Thrive_AI.to_editor() # So it ends in the editor.
 

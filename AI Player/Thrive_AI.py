@@ -5,12 +5,12 @@ import csv
 import os
 
 pyautogui.FAILSAFE = True # Move mouse to top left of screen to automatically stop.
-pyautogui.PAUSE = 0.25 # Minimum time between each pyautogui action
+pyautogui.PAUSE = 0.3 # Minimum time between each pyautogui action
 
 # Function to get from played microbe stage to editor.
 def to_editor():
     pyautogui.click(3550, 1857) # Click button to go to editor
-    time.sleep(2) # Temp. TODO: Need to find way to know when loading screen is over. ***
+    time.sleep(4) # Temp. TODO: Need to find way to know when loading screen is over. ***
     pyautogui.click(3606, 2071) # Skip first page
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
@@ -120,7 +120,7 @@ def add_part(num_placed: int, place_rotation: float):
     place_position[1] -= np.sin(np.deg2rad(place_rotation))*162
     print(place_position)
     print(np.cos(np.deg2rad(place_rotation))*162, np.sin(np.deg2rad(place_rotation))*162)
-    pyautogui.click(place_position[0], place_position[1]) # Casted here so we don't lose accuracy in future placement positions
+    pyautogui.click(place_position[0], place_position[1])
 
     # Calculate next position:
     # Works for first circle. TODO: Need to find automated way to do expanding circles.

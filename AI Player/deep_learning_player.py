@@ -2,6 +2,7 @@ import Thrive_AI
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import time
 import matplotlib as plt
 import os
 import pandas as pd
@@ -14,7 +15,7 @@ from sklearn.model_selection import train_test_split
 """
 Converts selection number to string Thrive_AI.select_part() can accept.
 """
-def to_selection(selection: int):
+def to_selection(selection: int) -> str:
     match selection:
         case 0:
             return "cytoplasm"
@@ -40,6 +41,8 @@ def to_selection(selection: int):
             return "chemoreceptor"
         case 11:
             return "slime jet"
+        case _:
+            return f"Error {selection} is an invalid selection." # Error will propogate to a raise ValueError in Thrive_AI.
 
 
 """
@@ -111,14 +114,48 @@ for i in range(epochs):
 #         print(f"{y_test[i]}")
 
 # Start:
-current_data = data.drop("selected", axis=1).iloc[0] # Get header and initial data which is always on first line.
-current_data = current_data.values
-current_data = torch.FloatTensor(current_data)
+Thrive_AI.to_editor()
+time.sleep(4) # Sleeps are to avoid loading time complications. Will look for a better solution after DEMO.
 
+current_data = data.drop("selected", axis=1).iloc[0] # Get header and initial data which is always on first line.
+current_data = torch.FloatTensor(current_data.values)
+
+selection = 0
 with torch.no_grad():
     y_val = model.forward(current_data)
     selection = y_val.argmax().item()
-    print(selection, to_selection(selection))
+    print(to_selection(selection))
+
+current_organelles = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+current_organelles[selection] += 1
+
+Thrive_AI.select_part(to_selection(selection))
+time.sleep(2)
+num_placed = 0
+place_rotation = 225
+num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+time.sleep(2)
+Thrive_AI.to_active_stage()
+time.sleep(5)
+Thrive_AI.to_editor()
 
 # Loop through DEMO's 5 more generations
+for i in range(5):
+    Thrive_AI.convert_to_csv(current_organelles, "deep_learning", False)
+    time.sleep(4)
+    current_data = data.drop("selected", axis=1).iloc[len(data) - 1] # Get header and initial data which is always on first line.
+    current_data = torch.FloatTensor(current_data.values)
 
+    with torch.no_grad():
+        y_val = model.forward(current_data)
+        selection = y_val.argmax().item()
+        print(to_selection(selection))
+    current_organelles[selection] += 1
+
+    Thrive_AI.select_part(to_selection(selection))
+    time.sleep(2)
+    num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+    time.sleep(2)
+    Thrive_AI.to_active_stage()
+    time.sleep(5)
+    Thrive_AI.to_editor()

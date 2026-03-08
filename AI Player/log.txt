@@ -2,16 +2,16 @@ Compounds:
 Ammonia: Amount: 249346.2 (6.77147E-05 density), ambient: 0 
 Glucose: Amount: 120759.99 (2.3967747E-05 density), ambient: 0 
 Phosphates: Amount: 240895.92 (8.076085E-05 density), ambient: 0 
-Hydrogensulfide: Amount: 240328.78 (0.0002320645 density), ambient: 0 
+Hydrogensulfide: Amount: 240328.78 (0.00023586967 density), ambient: 0 
 Oxygen: Amount: 0 (0 density), ambient: 0 
-Carbondioxide: Amount: 0 (0 density), ambient: 0.38463646 
-Nitrogen: Amount: 0 (0 density), ambient: 0.55612665 
+Carbondioxide: Amount: 0 (0 density), ambient: 0.39113063 
+Nitrogen: Amount: 0 (0 density), ambient: 0.5506018 
 Sunlight: Amount: 0 (0 density), ambient: 0 
 Temperature: Amount: 0 (0 density), ambient: 98 
 Iron: Amount: 0 (0 density), ambient: 0
 
 Current Microbe Info:
 Speed: 24.769098 
-ATP Production: 4.4 
+ATP Production: 2.4 
 ATP Consumption: 4 
-Population: 38463 
+Population: 2879 

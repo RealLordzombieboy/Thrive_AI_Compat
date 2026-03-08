@@ -15,9 +15,10 @@ def to_editor():
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
 # Converts log.txt file to a csv file for ease of use.
-def convert_to_csv(added: list[str]):
-    data = [["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature", "Iron", "Speed", "ATP Consumption", "ATP Production",
-             "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]]
+def convert_to_csv(added: list[str], ai_type: str, new: bool):
+    if new == True:
+        data = [["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature", "Iron", "Speed", "ATP Production", "ATP Consumption", "Population",
+                "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]]
     key_words1 = ["Ammonia", "Glucose", "Phosphates", "Hydrogensulfide", "Production", "Consumption", "Iron"]
     key_words2 = ["Oxygen", "Carbondioxide", "Nitrogen", "Sunlight", "Temperature"]
 
@@ -31,8 +32,8 @@ def convert_to_csv(added: list[str]):
                 current = split[1][:-1] # ATP has end of name in second column, the rest are first column.
             else:
                 current = split[0][:-1] # [:-1] removes colon
-            if current == "Speed":
-                current_data.append(split[1]) # Speed has data in second column.
+            if current == "Speed" or current == "Population":
+                current_data.append(split[1]) # Only Speed and Population have data in second column.
             elif current in key_words1:
                 current_data.append(split[2]) # Primary data in amount or is ATP-related.
             elif current in key_words2:
@@ -70,12 +71,20 @@ def convert_to_csv(added: list[str]):
     for i in organelle_count:
         current_data.append(i)
     
-    data.append(current_data)
+    if new == True:
+        data.append(current_data)
+        # Convert data into csv file:
+        with open(__location__ + "/" + ai_type + "_log.csv", 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+    else:
+        data = [current_data]
+        # Convert data into csv file:
+        with open(__location__ + "/" + ai_type + "_log.csv", 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
     
-    # Convert data into csv file:
-    with open(__location__ + "/log.csv", 'w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(data)
+    
 
 # Function to get from editor to played microbe stage.
 def to_active_stage():
@@ -183,10 +192,10 @@ def deep_learning_AI():
     pass
 
 if __name__ == "__main__":
-    # # test_position()
-    # time.sleep(3)
-    # # to_editor()
-    convert_to_csv(["cytoplasm"]) # Initial micro-organism starts with one cytoplasm.
+    # test_position() # DEBUG
+    # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
+    # to_editor()
+    convert_to_csv(["cytoplasm"], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

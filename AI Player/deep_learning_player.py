@@ -41,6 +41,8 @@ def to_selection(selection: int) -> str:
             return "chemoreceptor"
         case 11:
             return "slime jet"
+        case 12:
+            return "none"
         case _:
             return f"Error {selection} is an invalid selection." # Error will propogate to a raise ValueError in Thrive_AI.
 
@@ -51,7 +53,7 @@ Takes in data from deep_learning_log.csv and outputs what option to choose for c
 class Model(nn.Module):
     # 26 input features from CSV file. 12 actions (which organelle to select and add. Only one for now.)
     # From my experience having inner layers be at least double the first layer is a good starting point.
-    def __init__(self, features=26, h1=52, h2=52, actions=12):
+    def __init__(self, features=26, h1=52, h2=52, actions=13):
         super().__init__()
         self.fc1 = nn.Linear(features, h1)
         self.fc2 = nn.Linear(h1, h2)
@@ -114,6 +116,7 @@ for i in range(epochs):
 #         print(f"{y_test[i]}")
 
 # Start:
+time.sleep(3) # To give time for the user to open Thrive window before mouse control is taken. BE CAREFUL, MOVE TO TOP LEFT CORNER SEVERAL TIMES TO FORCE STOP PROGRAM.
 Thrive_AI.to_editor()
 time.sleep(4) # Sleeps are to avoid loading time complications. Will look for a better solution after DEMO.
 
@@ -141,7 +144,7 @@ Thrive_AI.to_editor()
 
 # Loop through DEMO's 5 more generations
 for i in range(5):
-    Thrive_AI.convert_to_csv(current_organelles, "deep_learning", False)
+    Thrive_AI.convert_to_csv(current_organelles, "deep_learning", False) # Requires manually setting what the optimal solution was, or delete these after each run.
     time.sleep(4)
     current_data = data.drop("selected", axis=1).iloc[len(data) - 1] # Get header and initial data which is always on first line.
     current_data = torch.FloatTensor(current_data.values)
@@ -149,13 +152,13 @@ for i in range(5):
     with torch.no_grad():
         y_val = model.forward(current_data)
         selection = y_val.argmax().item()
-        print(to_selection(selection))
+        #print(to_selection(selection)) # DEBUG
     current_organelles[selection] += 1
-
-    Thrive_AI.select_part(to_selection(selection))
-    time.sleep(2)
+    if selection != 12: # If selection == 12 then this is the inaction action (add no parts.)
+        Thrive_AI.select_part(to_selection(selection))
+    time.sleep(1)
     num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
-    time.sleep(2)
+    time.sleep(1)
     Thrive_AI.to_active_stage()
     time.sleep(5)
     Thrive_AI.to_editor()

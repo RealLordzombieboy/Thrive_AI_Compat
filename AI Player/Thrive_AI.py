@@ -115,11 +115,11 @@ def add_part(num_placed: int, place_rotation: float):
     place_position = center
     
     # Add to current position:
-    print("\n", place_position)
+    #print("\n", place_position) # DEBUG
     place_position[0] += np.cos(np.deg2rad(place_rotation))*162
     place_position[1] -= np.sin(np.deg2rad(place_rotation))*162
-    print(place_position)
-    print(np.cos(np.deg2rad(place_rotation))*162, np.sin(np.deg2rad(place_rotation))*162)
+    #print(place_position) # DEBUG
+    #print(np.cos(np.deg2rad(place_rotation))*162, np.sin(np.deg2rad(place_rotation))*162) # DEBUG
     pyautogui.click(place_position[0], place_position[1])
 
     # Calculate next position:
@@ -148,22 +148,12 @@ def planner_AI():
     # Make actions agent makes (Actions in the PDDL file are 1:1 with actions we take in game.)
     pass
 
-# BAYES NETS:
-
-def bayes_net_AI():
-    pass
-
-# DEEP LEARNING:
-
-def deep_learning_AI():
-    pass
-
 if __name__ == "__main__":
     # test_position() # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
     #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
-    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1], "bayes_net", False) # DEBUG
+    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "deep_learning", False) # DEBUG
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

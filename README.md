@@ -8,6 +8,8 @@ For logs to work please go to "...\Thrive_AI_Compat\src\microbe_stage\editor\Mic
 
 There is a failsafe to stop the program. If you rapidly move the mouse into the top left corner multiple times when the game is paused it should force quit the mouse control and thus the AI player programs.
 
+Deep Learning and Bayes Nets work for 6 generations now. I need to set up Docker and ENHSP on my system to be able to properly start the Numeric Planner ai_player.pddl.
+
 
 
 

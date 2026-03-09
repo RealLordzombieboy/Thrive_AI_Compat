@@ -138,17 +138,8 @@ def test_position():
         print(pyautogui.position())
         time.sleep(1)
 
-# PLANNING:
-
-def planner_AI():
-    # for 30 generations:
-    # Get to editor
-    # Give current data to planning agent
-    # Run planning agent
-    # Make actions agent makes (Actions in the PDDL file are 1:1 with actions we take in game.)
-    pass
-
 if __name__ == "__main__":
+    # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
     # test_position() # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()

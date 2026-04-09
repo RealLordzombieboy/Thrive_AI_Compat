@@ -110,26 +110,51 @@ def select_part(organelle: str):
         raise ValueError(f"Organelle \"{organelle}\" not known.")
 
 # Function to add part in a spiral around current cell.
-def add_part(num_placed: int, place_rotation: float):
-    center = [1920, 1080]
-    place_position = center
-    
-    # Add to current position:
-    #print("\n", place_position) # DEBUG
-    place_position[0] += np.cos(np.deg2rad(place_rotation))*162
-    place_position[1] -= np.sin(np.deg2rad(place_rotation))*162
-    #print(place_position) # DEBUG
-    #print(np.cos(np.deg2rad(place_rotation))*162, np.sin(np.deg2rad(place_rotation))*162) # DEBUG
-    pyautogui.click(place_position[0], place_position[1])
+"""
+@param num_placed must start at 1 as we start with one organelle in r = 0. Can be used to place in specific positions, so if the initial organelle
+is removed then num_placed = 0 will place at that location.
+"""
+def add_part(num_placed: int):
+    if num_placed == 0:
+        r = 0
+    else:
+        r = np.floor((3+np.sqrt(12*(num_placed)-3))/6) # See README for derivation. Finds the ring # such that center is ring 0.
+    print(r, num_placed) # DEBUG
 
     # Calculate next position:
-    # Works for first circle. TODO: Need to find automated way to do expanding circles.
-    if num_placed < 6: # First circle
-        if (num_placed+1) % 3 == 0:
-            place_rotation += 90
+    # # Works for first circle. TODO: Need to find automated way to do expanding circles.
+    # if num_placed < 6: # First circle
+    #     if (num_placed+1) % 3 == 0:
+    #         place_rotation += 90
+    #     else:
+    #         place_rotation += 45
+    
+    # A more automated way to deal with placement:
+    if (r != 0):
+        # place_rotation = 60 degrees * floor(index_in_ring/current_ring) # st index_in_ring and current_ring start at 0.
+        index_in_ring = num_placed - 1
+        index_in_ring -= 6*((r-1)*r/2) # Subtracts 6 * the sum of all rings from 1 to r-1.
+        if r % 2 == 0:
+            place_rotation = 60 * index_in_ring/(r) # Not -30 on even rings as they have hexagons on the x-axis.
+            print(60 * index_in_ring/(r)) # DEBUG
         else:
-            place_rotation += 45
-    return num_placed + 1, place_rotation
+            place_rotation = 60 * index_in_ring/(r) - 30 # -30 on odd rings as their hexagons are offset with an edge on the x-axis, but will always have a hexagon along the -30 degree line.
+            print(60 * index_in_ring/(r) - 30) # DEBUG
+
+    # Add to current position:
+    center = [1920, 1080]
+    place_position = center
+    #print("\n", place_position) # DEBUG
+    place_position[0] += np.cos(np.deg2rad(place_rotation))*(132*r) # Fine tuned 132 to be the pixel radius whose circles when multiplied by r overlap with at least 3 rings of hexagons (plus the centre when r=0).
+    place_position[1] -= np.sin(np.deg2rad(place_rotation))*(132*r)
+    print(place_position, place_rotation) # DEBUG
+    #print(np.cos(np.deg2rad(place_rotation))*162, np.sin(np.deg2rad(place_rotation))*162) # DEBUG
+    pyautogui.moveTo(place_position[0], place_position[1])
+    time.sleep(0.3) # Too fast for game otherwise, game could sometimes think it was placing/clicking in the previous position.
+    pyautogui.click(place_position[0], place_position[1])
+
+    print(num_placed + 1, place_rotation, index_in_ring) # DEBUG
+    return num_placed + 1
 
 # Test code to find locations:
 # Immediate potential problem found: Different monitors have different aspect ratios and pixel counts. ***
@@ -140,11 +165,21 @@ def test_position():
 
 if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
+    pass # Remove this pass and uncomment section you want to test if that is desired.
     # test_position() # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
     #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.
-    convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "deep_learning", False) # DEBUG
+    #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "deep_learning", False) # DEBUG
+
+    # Test Hexagonal Spiral Placement:
+    # num_placed = 1
+    # time.sleep(2)
+    # for i in range(30):
+    #     time.sleep(0.3)
+    #     num_placed = add_part(num_placed)
+    #     print("\n",end="")
+
     # select_part("flagellum")
     # num_placed = 0 # Initial is 0 parts placed.
     # place_rotation = 225 # In degrees. Cell placements move clockwise (subtract from this number.) Initial is 225 degrees.

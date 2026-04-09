@@ -10,7 +10,35 @@ There is a failsafe to stop the program. If you rapidly move the mouse into the 
 
 Deep Learning and Bayes Nets work for 6 generations now. I need to set up Docker and ENHSP on my system to be able to properly start the Numeric Planner ai_player.pddl.
 
+Calculations for organelle placement around hexagonal grid:
 
+0, 6, 18, 36, 60, 90
+0, 1,  2,  3,  4,  5 /
+0, 6,  9, 12, 15, 18 =
+
+0, 6, 18, 36, 60, 90 /6
+0, 1,  3,  6, 10, 15 =
+0, 1 (x\*1),  3 (x\*2-1),  6 (x\*2), 10 (x\*3-2), 15 (x\*3) => next is (x\*4-3), which is correct (21).
+
+---
+
+(n(n+1))/2 = max st n is an integer >= 0 and max is an integer >= 0.
+0 = n^2 + n - 2\*max
+n = (-1 +/- sqrt(1 - 4(-2\*max)))/2
+n = (-1 + sqrt(1 - 4(-2\*max)))/2
+
+So given num_placed, r = np.floor((-1 + np.sqrt(1 - 4\*(-2\*(num_placed/6))))/2)
+
+But this does not work. For some reason r = np.floor((3+np.sqrt(12\*(num_placed)-3))/6) works, though. This formula was acquired from https://www.redblobgames.com/grids/hexagons/.
+
+0, 6, 12, 18, 24, 30
+0, 6, 18, 36, 60, 90
+0, 1,  2,  3,  4,  5
+
+So index_in_ring = num_placed - 6\*sum(r) from 1 to (r-1)
+		         = num_placed - 6\*((r-1)\*r/2)
+
+An additional -1 was added to the code as the theory behind this math requires index_in_ring to start at 0.
 
 
 Thrive

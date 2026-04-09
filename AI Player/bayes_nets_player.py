@@ -78,11 +78,10 @@ current_data = data.iloc[[0]] # Get just the header and initial data.
 # Calculate what organelle to add first:
 best_organelle, best_organelle_num = best_organelle_calc(current_data)
 
-place_rotation = 225
 num_placed = 0
 current_organelles = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Thrive_AI.select_part(best_organelle)
-num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+num_placed = Thrive_AI.add_part(num_placed)
 current_organelles[best_organelle_num] += 1
 
 Thrive_AI.to_active_stage()
@@ -108,7 +107,7 @@ for i in range(5):
     time.sleep(2)
     Thrive_AI.select_part(best_organelle)
     time.sleep(2)
-    num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+    num_placed = Thrive_AI.add_part(num_placed)
     current_organelles[best_organelle_num] += 1
     time.sleep(2)
     Thrive_AI.to_active_stage()

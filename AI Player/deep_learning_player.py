@@ -135,8 +135,7 @@ current_organelles[selection] += 1
 Thrive_AI.select_part(to_selection(selection))
 time.sleep(2)
 num_placed = 0
-place_rotation = 225
-num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+num_placed = Thrive_AI.add_part(num_placed)
 time.sleep(2)
 Thrive_AI.to_active_stage()
 time.sleep(5)
@@ -157,7 +156,7 @@ for i in range(5):
     if selection != 12: # If selection == 12 then this is the inaction action (add no parts.)
         Thrive_AI.select_part(to_selection(selection))
     time.sleep(1)
-    num_placed, place_rotation = Thrive_AI.add_part(num_placed, place_rotation)
+    num_placed = Thrive_AI.add_part(num_placed)
     time.sleep(1)
     Thrive_AI.to_active_stage()
     time.sleep(5)

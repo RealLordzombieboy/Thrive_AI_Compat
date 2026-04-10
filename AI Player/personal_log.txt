@@ -13,3 +13,31 @@ Bayes Nets player AI seems to guess how many organelles of each type should be a
 
 TODO AFTER DEMO:
 1. Fix Bayes Nets logical error that causes it to state the quantities of how many organelles should be selected of each type in the current generation and not what to add for the next generation.
+  - Potential solution (though a painful one): Complete dozens of runs where each generation is run for each potential option then decide what the correct option was based on the highest increase in population, and include that result in the csv.
+
+2. Cut down on number of edges in Bayes Net, simplify and get more data (automate?)
+
+Current solution to 1 and 2:
+We do not need to consider Sunlight as the model will never leave the heat vents starting biome which never gets sunlight, and temperature does not impact which organelles to add.
+We do not need to consider speed as though the organelle being added will impact speed which impacts population, it does not work the other way around (we don't know the future values for speed or any of the variables.)
+For now we will not consider what is currently on the microbe directly.
+
+Simplest model is to predict next organelle to add based on the current glucose, hydrogensulfide, oxygen, carbondioxide, nitrogen, and iron environmental variables.
+This gives us 6 connections to the predictor node, so a minimum of 2^6 = 64 data points needed to be gathered.
+We can also add in a link with Population, ATP Consumption, and ATP Production, which will require 6^9 = 512 data points at a minimum.
+This means the range we are looking at for data points is between 64 and 512.
+
+For the sake of future-proofing, I will not remove any of the data types gathered in case it is desired to re-add them later so I don't need to re-run the data collection again to get them.
+
+This approach of ignoring what is currently on the microbe means we do not need to run all required data points for each of the 20-30 generations, lowering the total data points needed even further.
+The only issue is that I will need to run each generation 12 times to find which organelle is the best to add.
+
+3. Make it possible to run ENHSP numerical planner with the planning AI.
+
+4. Re-write the report with much more detail and reasonings for decisions made.
+
+5. Make a system that tells when the game is won/lost.
+
+6. Fix only being able to use the system on 4K systems.
+
+7. Figure out how to submit the game with my changes and the AI Player folder.

@@ -163,6 +163,31 @@ def test_position():
         print(pyautogui.position())
         time.sleep(1)
 
+"""
+Runs the game for 'quantity' generations, running each generation 12 times, picking one organelle in each time and one loop of no organelles.
+@param quantity The quantity of generations to run for.
+"""
+def gather_data(quantity: int):
+    pass
+    # Turn on infinite growth speed and compounds
+    # Go to editor
+
+    # for quantity loops:
+        # Save with name "Temp"
+        # Create list called "generation_data"
+        # For each option "organelle" in organelles to select or not (12 total loops):
+            # Select and add organelle
+            # Go to run-time
+            # Go to editor
+            # Save data from log.txt to file "gathered_data.csv"
+            # Save population to "generation_data"
+            # Go to load
+            # Load "Temp"
+        # Select and add organelle that led to highest population
+        # Go to run-time
+        # Go to editor
+        # Save data from log.txt to file "data_log.csv"
+
 if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
     pass # Remove this pass and uncomment section you want to test if that is desired.

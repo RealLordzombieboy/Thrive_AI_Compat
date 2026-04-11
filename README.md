@@ -4,7 +4,7 @@ FOR CISC 352: AI files are contained within AI Player folder.
 PDDL uses ENHSP numeric planner, which requires JAVA 15.
 Bayes Nets uses pgmpy. pgmpy requires Python version >= 3.8 and <= 3.11.
 
-For logs to work please go to "...\Thrive_AI_Compat\src\microbe_stage\editor\MicrobeEditor.cs" and replace line 307 'var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt";' with your location of the project (i.e. replace "C:/GitHub Projects" with your location of Thrive_AI_Compat.) Also go to "...\Thrive_AI_Compat\src\auto-evo\RunResults.cs" and replace line 151 with the same thing you replaced the previous with (i.e. everything before "/Thrive_AI_Compat" with the location of Thrive_AI_Compat.)
+For logs to work please go to "...\Thrive_AI_Compat\src\microbe_stage\editor\MicrobeEditor.cs" and replace line 310 'var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt";' with your location of the project (i.e. replace "C:/GitHub Projects" with your location of Thrive_AI_Compat.) Also go to "...\Thrive_AI_Compat\src\auto-evo\RunResults.cs" and replace line 151 with the same thing you replaced the previous with (i.e. everything before "/Thrive_AI_Compat" with the location of Thrive_AI_Compat.) Also replace the same location pointer in line 546 of "...\Thrive_AI_Compat\src\microbe_stage\editor\MicrobeEditor.cs".
 
 There is a failsafe to stop the program. If you rapidly move the mouse into the top left corner multiple times when the game is paused it should force quit the mouse control and thus the AI player programs.
 

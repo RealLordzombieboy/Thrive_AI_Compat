@@ -219,6 +219,7 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
                 AchievementEvents.ReportExitEditorWithoutChanges();
             }
         }
+        LoadingScreen.Instance.QueueActionForWhenHidden(() => MarkLoaded(), 0.5f); // *** Added to check when loading is done between editor and active stage.
 
         return result;
     }
@@ -306,7 +307,7 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         if (!IsLoadedFromSave)
             TutorialState.SendEvent(TutorialEventType.EnteredMicrobeEditor, EventArgs.Empty, this);
         // *** My modifications below.
-        var location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt"; // Change this to where your Thrive_AI_Compat is located.
+        const string location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/log.txt"; // Change this to where your Thrive_AI_Compat is located.
         File.WriteAllText(location, "Compounds:\n");
         File.AppendAllText(location, $"Ammonia: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Ammonia)} \n");
         File.AppendAllText(location, $"Glucose: {CurrentPatch.GetCompoundAmountForDisplay(Compound.Glucose)} \n");
@@ -323,6 +324,7 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         File.AppendAllText(location, $"ATP-Production: {GetPlayerDataSource().EnergyBalance.TotalProduction} \n");
         File.AppendAllText(location, $"ATP-Consumption: {GetPlayerDataSource().EnergyBalance.TotalConsumption + GetPlayerDataSource().EnergyBalance.BaseMovement} \n");
         RunResults.NewGeneration = true; // Allows RunResults to add the player's current population to the log once.
+        LoadingScreen.Instance.QueueActionForWhenHidden(() => MarkLoaded(), 0.5f);
     }
 
     protected override void UpdateHistoryCallbackTargets(ActionHistory<EditorAction> actionHistory)
@@ -536,6 +538,13 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         // This creates a new callable each time, but the garbage amount should be negligible
         reportTab.UpdateAutoEvoResults(autoEvoResults, autoEvoExternal?.ToString() ?? "error",
             () => autoEvoResults.MakeSummary(true));
+    }
+
+    // My adjustments below (To tell when loading is done) ***
+    private static void MarkLoaded()
+    {
+        const string location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/load.txt"; // Change this to where your Thrive_AI_Compat is located.
+        File.WriteAllText(location, "Loaded");
     }
 
     private void OnShowStatisticsForTutorial()

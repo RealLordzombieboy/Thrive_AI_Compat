@@ -112,6 +112,13 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         return instance;
     }
 
+    // My adjustments below (To tell when loading is done) ***
+    public static void MarkLoaded()
+    {
+        const string location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/load.txt"; // Change this to where your Thrive_AI_Compat is located.
+        File.WriteAllText(location, "Loaded");
+    }
+
     public override void WriteToArchive(ISArchiveWriter writer)
     {
         // Due to callbacks in history, subcomponents need to be written first
@@ -219,7 +226,6 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
                 AchievementEvents.ReportExitEditorWithoutChanges();
             }
         }
-        LoadingScreen.Instance.QueueActionForWhenHidden(() => MarkLoaded(), 0.5f); // *** Added to check when loading is done between editor and active stage.
 
         return result;
     }
@@ -538,13 +544,6 @@ public partial class MicrobeEditor : EditorBase<EditorAction, MicrobeStage>, IEd
         // This creates a new callable each time, but the garbage amount should be negligible
         reportTab.UpdateAutoEvoResults(autoEvoResults, autoEvoExternal?.ToString() ?? "error",
             () => autoEvoResults.MakeSummary(true));
-    }
-
-    // My adjustments below (To tell when loading is done) ***
-    private static void MarkLoaded()
-    {
-        const string location = "C:/GitHub Projects/Thrive_AI_Compat/AI Player/load.txt"; // Change this to where your Thrive_AI_Compat is located.
-        File.WriteAllText(location, "Loaded");
     }
 
     private void OnShowStatisticsForTutorial()

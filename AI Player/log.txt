@@ -1,17 +1,17 @@
 Compounds:
-Ammonia: 21.341648 
-Glucose: 4.525211 
-Phosphates: 23.572922 
-Hydrogensulfide: 71.52088 
+Ammonia: 16.756525 
+Glucose: 3.5292454 
+Phosphates: 17.338226 
+Hydrogensulfide: 51.508972 
 Oxygen: 0 
-Carbondioxide: 45.68832 
-Nitrogen: 47.763298 
+Carbondioxide: 43.108837 
+Nitrogen: 50.173824 
 Sunlight: 0 
 Temperature: 9800 
-Iron: 3.3707757 
+Iron: 3.0805168 
 
 Current Microbe Info:
 Speed: 36.43162 
 ATP-Production: 2.4 
 ATP-Consumption: 2 
-Population: 10499 
+Population: 5265 

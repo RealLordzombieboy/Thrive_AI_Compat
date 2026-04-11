@@ -839,6 +839,7 @@ public sealed partial class MicrobeStage : CreatureStageBase<Entity, MicrobeWorl
 
     public override void OnReturnFromEditor()
     {
+        LoadingScreen.Instance.QueueActionForWhenHidden(() => MicrobeEditor.MarkLoaded(), 0.5f); // *** Added to check when loading is done between editor and active stage.
         UpdatePatchSettings();
 
         base.OnReturnFromEditor();

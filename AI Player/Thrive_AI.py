@@ -326,9 +326,9 @@ def gather_data(quantity: int):
 
 if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
-    pass # Remove this pass and uncomment section you want to test if that is desired.
+    # Remove this pass and uncomment section you want to test if that is desired.
     #test_position() # DEBUG
-    # gather_data(30)
+    gather_data(30)
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
     #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.

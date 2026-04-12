@@ -12,7 +12,10 @@ pyautogui.PAUSE = 0.2 # Minimum time between each pyautogui action
 # Function to get from played microbe stage to editor.
 def to_editor():
     pyautogui.click(3550, 1857) # Click button to go to editor
-    time.sleep(4) # Temp. TODO: Need to find way to know when loading screen is over. ***
+    loaded = False
+    while not loaded: # Wait for loading.
+        loaded = check_loading_completed()
+        time.sleep(0.2)
     pyautogui.click(3606, 2071) # Skip first page
     pyautogui.click(3606, 2071) # Skip second page, and we're there!
 
@@ -188,18 +191,18 @@ Clears load.txt.
 """
 def loading_complete(__location__) -> bool:
     with open(__location__ + "/load.txt", 'w', newline='') as file:
-            writer = csv.writer(file)
-            data = []
-            writer.writerows(data)
+            file.write("NOT LOADED")
             return True
     return False
 
 """
 Runs the game for 'quantity' generations, running each generation 12 times, picking one organelle in each time and one loop of no organelles.
 Must ensure autosave has been turned off and a Temp game save has already been made (does not matter what is in it, but it WILL BE DELETED/OVERWRITTEN)!
-@param quantity The quantity of generations to run for.
+@param quantity: The quantity of generations to run for.
+@param num_placed: In case of a crash, can bypass to start where gather_data left off.
+@param 
 """
-def gather_data(quantity: int):
+def gather_data(quantity: int, num_placed=1, organelle_count = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):
     loaded = False
     time.sleep(2) # Gives time to open game.
     loading_complete(os.path.realpath(os.path.dirname(__file__)))
@@ -210,9 +213,7 @@ def gather_data(quantity: int):
     time.sleep(2)
 
     to_editor()
-    num_placed = 1
-    organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet", "none"] # No reason to do thylakoids
-    organelle_count = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet", "none"]
     for _ in range(quantity):
         convert_to_csv([], "gathered_data", True, empty=True) # Ensure gathered_data is empty.
         # Save current state with name "Temp"
@@ -239,6 +240,7 @@ def gather_data(quantity: int):
                 while not loaded: # Wait for loading.
                     loaded = check_loading_completed()
                     time.sleep(0.2)
+                loaded = False
 
                 # Set infinite compounds and unlimited growth cheats to on.
                 pydirectinput.press('f6')
@@ -256,31 +258,38 @@ def gather_data(quantity: int):
                 while not loaded: # Wait for loading.
                     loaded = check_loading_completed()
                     time.sleep(0.2)
+                loaded = False
         # Convert all paths into a list of their population outcomes:
         __location__ = os.path.realpath(os.path.dirname(__file__))
         data = pd.read_csv(__location__ + "/gathered_data_log.csv")
-        populations = data[data.columns[13]].to_list()
+        populations = data[data.columns[13]].to_list() # Future population
+        atp_production = data[data.columns[11]].to_list() # Future production
+        atp_consumption = data[data.columns[12]].to_list() # Future consumption
         print(populations) # DEBUG
 
-        # Calculate organelle that leads to largest population:
-        largest_pop = -1 # Can never be negative so assuming not broken this will always be replaced.
-        largest_pop_pos = 0
+        # Calculate "best" organelle to add.
+        k = 0.001 # Population usually in the thousands, difference between ATP production and consumption usually in the single digits.
+        best = atp_production[0] - atp_consumption[0] + k*populations[0] # As populations can decrease, needs to be a selection from one of the options, not an arbitrary low number.
+        best_pos = 12 # If all populations are the same, do not add anything.
         for i in range(len(populations)):
-            if populations[i] > largest_pop:
-                largest_pop = populations[i]
-                largest_pop_pos = i
-        if largest_pop_pos > 2: # Account for not gathering data on thylakoids.
-            largest_pop_pos += 1
+            # (atp+) - (atp-) + k*population
+            if atp_production[i] - atp_consumption[i] + k*populations[i] > best:
+                best = atp_production[i] - atp_consumption[i] + k*populations[i]
+                best_pos = i
+        if best_pos > 2: # Account for not gathering data on thylakoids.
+            best_pos += 1
 
-        convert_to_csv(organelle_count, "data", False, ["selected"], largest_pop_pos) # Add best path for these environmental variables.
+        convert_to_csv(organelle_count, "data", False, ["selected"], best_pos) # Add best path for these environmental variables.
         
-        select_part(organelles[largest_pop_pos])
-        num_placed = add_part(num_placed)
-        organelle_count[largest_pop_pos] += 1
+        if organelles[best_pos] != "none":
+            select_part(organelles[best_pos])
+            num_placed = add_part(num_placed)
+            organelle_count[best_pos] += 1
         to_active_stage()
         while not loaded: # Wait for loading.
             loaded = check_loading_completed()
             time.sleep(0.2)
+        loaded = False
 
         # Set infinite compounds and unlimited growth cheats to on.
         pydirectinput.press('f6')
@@ -328,7 +337,8 @@ if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
     # Remove this pass and uncomment section you want to test if that is desired.
     #test_position() # DEBUG
-    gather_data(30)
+    gather_data(20)
+    #loading_complete(os.path.realpath(os.path.dirname(__file__))) # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()
     #convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "bayes_net", True) # Initial micro-organism starts with one cytoplasm.

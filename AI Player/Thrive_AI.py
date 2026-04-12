@@ -337,7 +337,7 @@ if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
     # Remove this pass and uncomment section you want to test if that is desired.
     #test_position() # DEBUG
-    gather_data(20)
+    gather_data(18, 2, [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
     #loading_complete(os.path.realpath(os.path.dirname(__file__))) # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()

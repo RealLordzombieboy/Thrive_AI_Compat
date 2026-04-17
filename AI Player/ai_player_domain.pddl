@@ -28,9 +28,12 @@
         (preference ?p - balance) ; In place of ATP production and consumption as their formulas are complicated, change, and some are hidden. Also since ATP does not show everything (A giant microbe with 100 ATP produced and 4 consumed will still likely die as that is at peak production and the environment likely cannot sustain that many resources all the time)
         (glucose ?g - compound)
         (hydrogensulfide ?hs - compound)
-        (oxygen ?o - compound)
+        (oxygen ?o - compound) ; A percentage out of 100. To use, need to divide by 100 so the upper bound is 1.
         (carbondioxide ?cd - compound) ; A percentage out of 100. To use, need to divide by 100 so the upper bound is 1.
-        (nitrogen ?n - compound)
+        (nitrogen ?n - compound) ; A percentage out of 100. To use, need to divide by 100 so the upper bound is 1.
+        (sunlight ?sl - compound)
+        (temperature ?tmp - compound)
+        (iron - ?irn compound)
         (total ?tc - cost)
         (organelles ?ot - cost) ; Keeps track of how many organelles are on the microorganism. To ensure larger microorganisms are less adventageous unless the environment allows.
     )

@@ -9,12 +9,17 @@
         (= (preference balance) 0)
         (= (total cost) 0)
         (= (organelles cost) 1) ; Starts with 1 organelle on microorganism at beginning of run/generation 1.
-        (= (hydrogensulfide compound) 27.043552)
-        (= (carbondioxide compound) 32.51549)
+        (= (glucose compound) 3.2829087)
+        (= (hydrogensulfide compound) 10.125566)
+        (= (oxygen compound) 0.0)
+        (= (carbondioxide compound) 29.874914)
+        (= (nitrogen compound) 63.27038)
+        (= (sunlight compound) 0.0)
+        (= (temperature compound) 9800.0)
+        (= (iron compound) 3.0275025)
     )
-
-; Maximize preference out of any viable combination of organelles to add. Must not use more than 100 points in a generation.
-(:goal (and (maximize preference) (<= (total cost) 100)))
+    ; Maximize preference out of any viable combination of organelles to add. Must not use more than 100 points in a generation.
+    (:goal (and (maximize preference) (<= (total cost) 100)))
 )
 
 ; Fog of war? Make it try to plan out 5 generations of evolution only with the current round's statistics?

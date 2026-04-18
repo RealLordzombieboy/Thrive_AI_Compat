@@ -2,10 +2,10 @@ import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import Thrive_AI
+import time
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import time
 
 # Notes:
 # Added selected column to the end of deep_learning_player's CSV file which will be the game's recommended

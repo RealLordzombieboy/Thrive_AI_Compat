@@ -1,26 +1,27 @@
 (define (problem ai-player-editor)
     (:domain ai-player)
     (:objects
-        balance
-        compound
-        cost
+        compound1 - compound
+        selected1 - selected
+        cost1 - cost
+        balance1 - balance
     )
     (:init
-        (= (preferencer balance) 0)
-        (= (total cost) 0)
-        (= (organelles cost) 1) ; Starts with 1 organelle on microorganism at beginning of run/generation 1.
-        (= (glucose compound) 3)
-        (= (hydrogensulfide compound) 10)
-        (= (oxygen compound) 0)
-        (= (carbondioxide compound) 29)
-        (= (nitrogen compound) 63)
-        (= (sunlight compound) 0)
-        (= (iron compound) 3)
+        (= (preferencer) 0)
+        (= (total) 0)
+        (= (organelles) 1) ; Starts with 1 organelle on microorganism at beginning of run/generation 1.
+        (= (glucose) 3)
+        (= (hydrogensulfide) 10)
+        (= (oxygen) 0)
+        (= (carbondioxide) 29)
+        (= (nitrogen) 63)
+        (= (sunlight) 0)
+        (= (iron) 3)
     )
     
     
-    (:goal (and (<= (total cost) 100))) ; Must not use more than 100 points in a generation.
-    (:metric maximize (preferencer balance)) ; Maximize preferencer out of any viable combination of organelles to add.
+    (:goal (and (<= (total) 100) (>= (preferencer) 0))) ; Must not use more than 100 points in a generation.
+    (:metric maximize (preferencer)) ; Maximize preferencer out of any viable combination of organelles to add.
 )
 
 ; Fog of war? Make it try to plan out 5 generations of evolution only with the current round's statistics?

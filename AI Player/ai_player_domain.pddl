@@ -75,8 +75,8 @@
         :precondition (and (not (thylakoids ?thy)) (<= (total ?tc) 55))
         :effect (and    (thylakoids ?thy)
                         (increase (total ?tc) 45)
-                        ; Though thylakoids mainly produce glucose, not ATP, they also convert glucose into ATP at a similar rate to cytoplasm so I will consider the production of glucose to be equivalent to production of ATP (though technically better as it produces its own assuming sunlight). *4 mainly because with 50% sunlight it is 4* more efficient than cytoplasm.
-                        (increase (preferencer ?p) (+ (glucose ?g) (* 4 (+ (sunlight ?sl) (carbondioxide ?cd)))))
+                        ; Though thylakoids mainly produce glucose, not ATP, they also convert glucose into ATP at a similar rate to cytoplasm so I will consider the production of glucose to be equivalent to production of ATP (though technically better as it produces its own assuming sunlight). *15 mainly because with 100% sunlight it is about 15* more efficient than cytoplasm.
+                        (increase (preferencer ?p) (+ (glucose ?g) (* 15 (* (sunlight ?sl) (+ 1 (carbondioxide ?cd))))))
                         (decrease (preferencer ?p) (organelles ?ot))
                         (increase (organelles ?ot) 1))
     )
@@ -139,7 +139,7 @@
         :precondition (and (not (perforatorpilus ?per)) (<= (total ?tc) 70) (>= (organelles ?ot) 5)) ; Similar to toxisome, should not be picked first and need the volume to be able to consume what is attacked.
         :effect (and    (perforatorpilus ?per)
                         (increase (total ?tc) 30)
-                        (increase (preferencer ?p) 5) ; Arbitrary value to make perforatorpilus potentially worthwhile if there is not a "must pick this" option currently available.
+                        (increase (preferencer ?p) 10) ; Arbitrary value to make perforatorpilus potentially worthwhile if there is not a "must pick this" option currently available.
                         (decrease (preferencer ?p) (organelles ?ot))
                         (increase (organelles ?ot) 1))
     )

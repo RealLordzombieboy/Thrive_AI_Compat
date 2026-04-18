@@ -68,7 +68,7 @@ def convert_to_csv(organelle_count: list[int], ai_type: str, new: bool, addition
 # Function to get from editor to played microbe stage.
 def to_active_stage():
     pyautogui.click(3606, 2071)
-    pyautogui.click(1622, 1166, duration=0.1) # In case "negative ATP warning comes up", will be in loading screen when pressed if warning does not appear.
+    pyautogui.click(1622, 1166, duration=0.1) # In case "negative ATP warning" comes up, will be in loading screen when pressed if warning does not appear.
     loaded = False
     while not loaded: # Wait for loading.
         loaded = check_loading_completed()
@@ -137,18 +137,9 @@ def add_part(num_placed: int):
     else:
         r = np.floor((3+np.sqrt(12*(num_placed)-3))/6) # See README for derivation. Finds the ring # such that center is ring 0.
     #print(r, num_placed) # DEBUG
-
-    # Calculate next position:
-    # # Works for first circle. TODO: Need to find automated way to do expanding circles.
-    # if num_placed < 6: # First circle
-    #     if (num_placed+1) % 3 == 0:
-    #         place_rotation += 90
-    #     else:
-    #         place_rotation += 45
     
     # A more automated way to deal with placement:
     if (r != 0):
-        # place_rotation = 60 degrees * floor(index_in_ring/current_ring) # st index_in_ring and current_ring start at 0.
         index_in_ring = num_placed - 1
         index_in_ring -= 6*((r-1)*r/2) # Subtracts 6 * the sum of all rings from 1 to r-1.
         if r % 2 == 0:
@@ -333,9 +324,9 @@ def gather_data(quantity: int, num_placed=1, organelle_count = [1, 0, 0, 0, 0, 0
 
 if __name__ == "__main__":
     # YOU DO NOT NEED TO RUN THIS FILE DIRECTLY. IT IS AN IMPORT FOR THE AGENTS, AND USED DIRECTLY FOR DEBUGGING AND DATASET GENERATION.
-    # Remove this pass and uncomment section you want to test if that is desired.
+    pass # Remove this pass and uncomment section you want to test if that is desired.
     #test_position() # DEBUG
-    gather_data(18, 2, [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
+    #gather_data(18, 2, [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
     #loading_complete(os.path.realpath(os.path.dirname(__file__))) # DEBUG
     # time.sleep(3) # To allow user to open Thrive/put in front of all other windows before control of mouse is taken.
     # to_editor()

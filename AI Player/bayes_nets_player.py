@@ -15,7 +15,7 @@ Thrive_AI.turn_on_cheats()
 # Create model with connections between nodes:
 model = LinearGaussianBayesianNetwork([("ATP Production", "Population"), ("ATP Consumption", "Population"), ("Speed", "Population"), # Base direct impacts on Population
                                        ("Ammonia", "Population"), #("Phosphates", "Population") # Phosphates do not change in initial dataset.
-                                       ("ATP Consumption", "selected"), ("ATP Production", "selected"), ("Population", "selected"),
+                                       #("ATP Consumption", "selected"), ("ATP Production", "selected"), ("Population", "selected"), # Enable this row if data points >= 512.
                                        ("Glucose", "selected"), ("Hydrogensulfide", "selected"), ("Iron", "selected"), ("Oxygen", "selected"), #("Sunlight", "thylakoids"), # Sunlight does not change in initial dataset.
                                        ("Carbondioxide", "selected"), ("Nitrogen", "selected")
 ])
@@ -29,7 +29,8 @@ data = pd.read_csv(__location__ + "/data_log.csv") # Read current log.csv.
 data.drop(columns=["Temperature", "Sunlight", "Phosphates", "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"], inplace=True)
 model.fit(data)
 
-for i in range(5):
+# Run for 20 generations:
+for i in range(20):
     Thrive_AI.to_editor()
     Thrive_AI.convert_to_csv(current_organelles, "bayes_net", False)
 
@@ -43,8 +44,8 @@ for i in range(5):
     # Calculate what organelle to add:
     
     df = current_data.drop(columns="selected")
-    organelle_prediction = (int)(model.predict(df)[1][0][0])
-    print(organelle_prediction) # DEBUG
+    organelle_prediction = round(model.predict(df)[1][0][0])
+    #print(organelle_prediction) # DEBUG
 
     # If predicted a value that does not have an organelle associated with it (or the option of no organelles) make it choose to add no organelles:
     if organelle_prediction < 0 or organelle_prediction > 12:

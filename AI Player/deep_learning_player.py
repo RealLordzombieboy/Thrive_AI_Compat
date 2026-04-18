@@ -69,33 +69,18 @@ for i in range(epochs):
     optimizer.step()
 
 # Start:
-time.sleep(3) # To give time for the user to open Thrive window before mouse control is taken. BE CAREFUL, MOVE TO ANY CORNER SEVERAL TIMES TO FORCE STOP PROGRAM.
+time.sleep(2) # To give time for the user to open Thrive window before mouse control is taken. BE CAREFUL, MOVE TO ANY CORNER SEVERAL TIMES TO FORCE STOP PROGRAM.
 Thrive_AI.turn_on_cheats()
 Thrive_AI.to_editor()
 
-current_data = data.drop("selected", axis=1).iloc[0] # Get header and initial data which is always on first line.
-current_data = torch.FloatTensor(current_data.values)
-
 selection = 0
-with torch.no_grad():
-    y_val = model.forward(current_data)
-    selection = y_val.argmax().item()
-
 current_organelles = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-current_organelles[selection] += 1
-
 num_placed = 1
-if selection != 12: # If selection == 12 then this is the inaction action (add no parts.)
-    Thrive_AI.select_part(selection)
-    time.sleep(1)
-    num_placed = Thrive_AI.add_part(num_placed)
-Thrive_AI.to_active_stage()
-Thrive_AI.to_editor()
 
-# Loop through 19 more generations
-for i in range(19):
+# Loop through 20 generations
+for i in range(20):
     Thrive_AI.convert_to_csv(current_organelles, "deep_learning", False) # Requires manually setting what the optimal solution was, or delete these after each run.
-    current_data = data.drop("selected", axis=1).iloc[len(data) - 1] # Get header and initial data which is always on first line.
+    current_data = data.drop("selected", axis=1).iloc[len(data) - 1] # Get header and current data which is always on first and last line, respectively.
     current_data = torch.FloatTensor(current_data.values)
 
     with torch.no_grad():

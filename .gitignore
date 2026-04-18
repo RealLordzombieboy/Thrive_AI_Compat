@@ -173,3 +173,7 @@ perf.data
 
 # Dev tools
 .direnv/
+
+# AI Player files
+AI Player/load.txt
+AI Player/log.txt

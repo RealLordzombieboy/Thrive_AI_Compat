@@ -20,6 +20,9 @@ lines = [
         "        (= (organelles cost) 1) ; Starts with 1 organelle on microorganism at beginning of run/generation 1.\n"
         ]
 
+# Uncomment and change number to the current organelle count if not the first generation (i.e. change after the first time the planner has been run.)
+# lines[10] = "        (= (organelles cost) 2)"
+
 Thrive_AI.convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "planner", True)
 
 # Convert csv environment/compound data into Python list:
@@ -27,7 +30,8 @@ __location__ = os.path.realpath(os.path.dirname(__file__))
 data = pd.read_csv(__location__ + "/planner_log.csv")
 data = data.iloc[0].to_list()[1:10] # All current compound/environmental data excluding Ammonia.
 data.pop(1) # Also removes Phosphates. Both of these are not needed as there are no organelles to select that directly use them.
-compounds = ["glucose","hydrogensulfide","oxygen","carbondioxide","nitrogen","sunlight","temperature","iron"]
+data.pop(6) # Removes temperature as it is not needed for organelle selection.
+compounds = ["glucose","hydrogensulfide","oxygen","carbondioxide","nitrogen","sunlight","iron"]
 
 # Loop through adding all compounds/environmental data to the init:
 for i in range(len(compounds)):

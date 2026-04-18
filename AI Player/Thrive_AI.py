@@ -68,51 +68,56 @@ def convert_to_csv(organelle_count: list[int], ai_type: str, new: bool, addition
 # Function to get from editor to played microbe stage.
 def to_active_stage():
     pyautogui.click(3606, 2071)
+    pyautogui.click(1622, 1166, duration=0.1) # In case "negative ATP warning comes up", will be in loading screen when pressed if warning does not appear.
+    loaded = False
+    while not loaded: # Wait for loading.
+        loaded = check_loading_completed()
+        time.sleep(0.2)
 
 # Function to select different cell parts. Takes string of what part to select.
-def select_part(organelle: str):
-    if organelle == "cytoplasm":
+def select_part(organelle: str|int):
+    if organelle == "cytoplasm" or organelle == 0:
         pyautogui.click(215, 720)
-    elif organelle == "hydrogenase":
+    elif organelle == "hydrogenase" or organelle == 1:
         # x=203, y=1114
         pyautogui.click(203, 1114)
-    elif organelle == "metabolosomes":
+    elif organelle == "metabolosomes" or organelle == 2:
         # x=520, y=1114
         pyautogui.click(520, 1114)
-    elif organelle == "thylakoids":
+    elif organelle == "thylakoids" or organelle == 3:
         # x=823, y=1121
         pyautogui.click(823, 1121)
-    elif organelle == "chemosynthesizing proteins":
+    elif organelle == "chemosynthesizing proteins" or organelle == 4:
         # x=208, y=1404
         pyautogui.click(208, 1404)
-    elif organelle == "rusticyanin":
+    elif organelle == "rusticyanin" or organelle == 5:
         # x=508, y=1410
         pyautogui.click(508, 1410)
-    elif organelle == "nitrogenase":
+    elif organelle == "nitrogenase" or organelle == 6:
         # x=825, y=1410
         pyautogui.click(825, 1410)
-    elif organelle == "toxisome":
+    elif organelle == "toxisome" or organelle == 7:
         # x=213, y=1711
         pyautogui.click(213, 1711)
-    elif organelle == "flagellum": # From here on requires scroll
+    elif organelle == "flagellum" or organelle == 8: # From here on requires scroll
         # x=211, y=1370
         pyautogui.moveTo(211, 1380) # Can sometimes start scrolling before moving.
         pyautogui.scroll(-450)
         pyautogui.click(211, 1380)
         pyautogui.scroll(400, 211, 1380) # Scroll back to reset location on organelle list.
-    elif organelle == "perforator pilus":
+    elif organelle == "perforator pilus" or organelle == 9:
         # x=513, y=1380
         pyautogui.moveTo(513, 1380) # Can sometimes start scrolling before moving.
         pyautogui.scroll(-450)
         pyautogui.click(513, 1380)
         pyautogui.scroll(400, 513, 1380) # Scroll back to reset location on organelle list.
-    elif organelle == "chemoreceptor":
+    elif organelle == "chemoreceptor" or organelle == 10:
         # x=823, y=1380
         pyautogui.moveTo(823, 1380) # Can sometimes start scrolling before moving.
         pyautogui.scroll(-450)
         pyautogui.click(823, 1380)
         pyautogui.scroll(400, 823, 1380) # Scroll back to reset location on organelle list.
-    elif organelle == "slime jet":
+    elif organelle == "slime jet" or organelle == 11:
         # x=206, y=1676
         pyautogui.moveTo(206, 1676) # Can sometimes start scrolling before moving.
         pyautogui.scroll(-450)
@@ -152,6 +157,8 @@ def add_part(num_placed: int):
         else:
             place_rotation = 60 * index_in_ring/(r) - 30 # -30 on odd rings as their hexagons are offset with an edge on the x-axis, but will always have a hexagon along the -30 degree line.
             #print(60 * index_in_ring/(r) - 30) # DEBUG
+    else:
+        place_rotation = 0
 
     # Add to current position:
     center = [1920, 1080]
@@ -196,6 +203,15 @@ def loading_complete(__location__) -> bool:
     return False
 
 """
+Set infinite compounds and unlimited growth cheats to on.
+"""
+def turn_on_cheats():
+    pydirectinput.press('f6')
+    pyautogui.click(100, 175, duration=0.2) # Duration linearly moves the mouse from where it is to the location specified.
+    pyautogui.click(100, 400, duration=0.2)
+    time.sleep(2)
+
+"""
 Runs the game for 'quantity' generations, running each generation 12 times, picking one organelle in each time and one loop of no organelles.
 Must ensure autosave has been turned off and a Temp game save has already been made (does not matter what is in it, but it WILL BE DELETED/OVERWRITTEN)!
 @param quantity: The quantity of generations to run for.
@@ -207,10 +223,7 @@ def gather_data(quantity: int, num_placed=1, organelle_count = [1, 0, 0, 0, 0, 0
     time.sleep(2) # Gives time to open game.
     loading_complete(os.path.realpath(os.path.dirname(__file__)))
     # Set infinite compounds and unlimited growth cheats to on.
-    pydirectinput.press('f6')
-    pyautogui.click(100, 175, duration=0.2)
-    pyautogui.click(100, 400, duration=0.2)
-    time.sleep(2)
+    turn_on_cheats()
 
     to_editor()
     organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet", "none"]
@@ -236,17 +249,9 @@ def gather_data(quantity: int, num_placed=1, organelle_count = [1, 0, 0, 0, 0, 0
                     add_part(num_placed)
                 
                 to_active_stage()
-                pyautogui.click(1622, 1166, duration=0.1) # In case "negative ATP warning comes up", will be in loading screen when pressed if warning does not appear.
-                while not loaded: # Wait for loading.
-                    loaded = check_loading_completed()
-                    time.sleep(0.2)
-                loaded = False
 
                 # Set infinite compounds and unlimited growth cheats to on.
-                pydirectinput.press('f6')
-                pyautogui.click(100, 175, duration=0.2)
-                pyautogui.click(100, 400, duration=0.2)
-                time.sleep(2)
+                turn_on_cheats()
 
                 to_editor()
                 convert_to_csv([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "gathered_data", False) # Will only use population here so organelle count does not matter.
@@ -286,16 +291,9 @@ def gather_data(quantity: int, num_placed=1, organelle_count = [1, 0, 0, 0, 0, 0
             num_placed = add_part(num_placed)
             organelle_count[best_pos] += 1
         to_active_stage()
-        while not loaded: # Wait for loading.
-            loaded = check_loading_completed()
-            time.sleep(0.2)
-        loaded = False
 
         # Set infinite compounds and unlimited growth cheats to on.
-        pydirectinput.press('f6')
-        pyautogui.click(100, 175, duration=0.2)
-        pyautogui.click(100, 400, duration=0.2)
-        time.sleep(2)
+        turn_on_cheats()
 
         to_editor()
         

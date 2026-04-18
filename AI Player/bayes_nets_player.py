@@ -1,117 +1,61 @@
+import os
 import pandas as pd
 from pgmpy.models import LinearGaussianBayesianNetwork
 # from pgmpy.models import BayesianNetwork
 # from pgmpy.factors.continuous import LinearGaussianCPD
 # from pgmpy.estimators import ParameterEstimator # For training
 # from pgmpy.estimators import MaximumLikelihoodEstimator
-import os
 import Thrive_AI
 import time
 
-# IMPORTANT: Will need to run this many times to train the model.
-# Final value will state what it selected in the previous run or current run? -- Current run, ish, unfortunately.
-
-def best_organelle_calc(current_data):
-    organelles = ["cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"]
-    organelle_prediction = []
-    for i in range(12):
-        df = current_data.drop(columns=organelles[i])
-        organelle_prediction.append(model.predict(df))
-
-    best_num = -2147483648 # Negative integer limit
-    best_organelle = "N/A"
-    best_organelle_num = 0
-    for i in range(len(organelle_prediction)):
-        val = organelle_prediction[i][1][0][0]
-        #print(val) # DEBUG
-        if val > best_num:
-            best_num = val
-            best_organelle = organelle_prediction[i][0][0]
-            best_organelle_num = i
-    
-    if best_organelle == "N/A":
-        raise RuntimeError("No best Organelle found. Organelles: {organelle_prediction}")
-
-    return best_organelle, best_organelle_num
-
 # Initialization:
-
-# WARNING: Ensure cheats are enabled, press F6, turn on Unlimited Resources and Infinite Growth Speed before running this program.
-time.sleep(3) # So user can quickly re-enter Thrive environment before mouse control is taken.
-Thrive_AI.to_editor()
+time.sleep(2) # Allow the user to quickly open the game after starting this program.
+Thrive_AI.turn_on_cheats()
 
 # Create model with connections between nodes:
 model = LinearGaussianBayesianNetwork([("ATP Production", "Population"), ("ATP Consumption", "Population"), ("Speed", "Population"), # Base direct impacts on Population
-                         # ATP Production and Consumption:
-                         ("cytoplasm", "ATP Production"), ("cytoplasm", "ATP Consumption"), ("hydrogenase", "ATP Production"), ("hydrogenase", "ATP Consumption"),
-                         ("metabolosomes", "ATP Production"), ("metabolosomes", "ATP Consumption"), ("thylakoids", "ATP Production"), ("thylakoids", "ATP Consumption"),
-                         ("chemosynthesizing proteins", "ATP Production"), ("chemosynthesizing proteins", "ATP Consumption"),
-                         ("rusticyanin", "ATP Production"), ("rusticyanin", "ATP Consumption"), ("nitrogenase", "ATP Production"), ("nitrogenase", "ATP Consumption"),
-                         ("toxisome", "ATP Production"), ("toxisome", "ATP Consumption"), ("flagellum", "ATP Production"), ("flagellum", "ATP Consumption"),
-                         ("perforator pilus", "ATP Consumption"), ("chemoreceptor", "ATP Consumption"), ("slime jet", "ATP Consumption"),
-                         ("perforator pilus", "Population"), ("chemoreceptor", "Population"), # Unique direct effects on Population
-                         # Speed:
-                         ("flagellum", "Speed"), ("slime jet", "Speed"), ("cytoplasm", "Speed"), ("hydrogenase", "Speed"), ("metabolosomes", "Speed"),
-                         ("thylakoids", "Speed"), ("chemosynthesizing proteins", "Speed"), ("rusticyanin", "Speed"), ("nitrogenase", "Speed"), ("toxisome", "Speed"),
-                         ("perforator pilus", "Speed"), ("chemoreceptor", "Speed"),
-                         # Compounds effects on Organelles (more of the corresponding compound means organelle more effective):
-                         ("Glucose", "cytoplasm"), ("Glucose", "hydrogenase"), ("Glucose", "chemosynthesizing proteins"), ("Glucose", "nitrogenase"), ("Glucose", "toxisome"),
-                         ("Carbondioxide", "thylakoids"),  ("Hydrogensulfide", "chemosynthesizing proteins"), #("Iron", "rusticyanin"), ("Oxygen", "metabolosomes"), ("Sunlight", "thylakoids"), # Iron, Oxygen and Sunlight do not change in initial dataset.
-                         ("Carbondioxide", "chemosynthesizing proteins"), ("Nitrogen", "nitrogenase"),
-                         # Ammonia and Phosphates have a direct effect on Population, as that is what is required to reproduce.
-                         ("Ammonia", "Population"), #("Phosphates", "Population") # Phosphates do not change in initial dataset.
-                         ])
+                                       ("Ammonia", "Population"), #("Phosphates", "Population") # Phosphates do not change in initial dataset.
+                                       ("ATP Consumption", "selected"), ("ATP Production", "selected"), ("Population", "selected"),
+                                       ("Glucose", "selected"), ("Hydrogensulfide", "selected"), ("Iron", "selected"), ("Oxygen", "selected"), #("Sunlight", "thylakoids"), # Sunlight does not change in initial dataset.
+                                       ("Carbondioxide", "selected"), ("Nitrogen", "selected")
+])
 
-# Read current log.csv:
 __location__ = os.path.realpath(os.path.dirname(__file__))
-data = pd.read_csv(__location__ + "/bayes_net_log.csv")
-data.drop(columns=["Temperature", "Sunlight", "Oxygen", "Phosphates", "Iron"], inplace=True) # Drop unchanging values in dataset.
-model.fit(data)
-#print(model.get_cpds()) # DEBUG
-
-# Predict which organelle to select:
-current_data = data.iloc[[0]] # Get just the header and initial data.
-
-# Force Bayes Net to pick something that increases its population (Did not work, output still the same.)
-# current_data.at[0, "Population"] = current_data["Population"].iloc[0] * 2
-
-# Calculate what organelle to add first:
-best_organelle, best_organelle_num = best_organelle_calc(current_data)
-
-num_placed = 0
+num_placed = 1
 current_organelles = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Thrive_AI.select_part(best_organelle)
-num_placed = Thrive_AI.add_part(num_placed)
-current_organelles[best_organelle_num] += 1
+data = pd.read_csv(__location__ + "/data_log.csv") # Read current log.csv.
 
-Thrive_AI.to_active_stage()
-time.sleep(5)
+# Drop unchanging values and organelle counts in dataset.
+data.drop(columns=["Temperature", "Sunlight", "Phosphates", "cytoplasm", "hydrogenase", "metabolosomes", "thylakoids", "chemosynthesizing proteins", "rusticyanin", "nitrogenase", "toxisome", "flagellum", "perforator pilus", "chemoreceptor", "slime jet"], inplace=True)
+model.fit(data)
 
 for i in range(5):
     Thrive_AI.to_editor()
     Thrive_AI.convert_to_csv(current_organelles, "bayes_net", False)
 
-    data = pd.read_csv(__location__ + "/bayes_net_log.csv")
-    data.drop(columns=["Temperature", "Sunlight", "Oxygen", "Phosphates", "Iron"], inplace=True) # Drop unchanging values in dataset.
-    model.fit(data)
-    #print(model.get_cpds()) # DEBUG
-
     # Predict which organelle to select:
     current_data = data.iloc[[len(data) - 1]] # Get just the header and most recent data.
 
+    data = pd.read_csv(__location__ + "/bayes_net_log.csv") # Read current log.csv.
     # Force Bayes Net to pick something that increases its population (Did not work, output still the same.)
     # current_data.at[0, "Population"] = current_data["Population"].iloc[0] * 2
 
     # Calculate what organelle to add:
-    best_organelle, best_organelle_num = best_organelle_calc(current_data)
-    time.sleep(2)
-    Thrive_AI.select_part(best_organelle)
-    time.sleep(2)
-    num_placed = Thrive_AI.add_part(num_placed)
-    current_organelles[best_organelle_num] += 1
-    time.sleep(2)
+    
+    df = current_data.drop(columns="selected")
+    organelle_prediction = (int)(model.predict(df)[1][0][0])
+    print(organelle_prediction) # DEBUG
+
+    # If predicted a value that does not have an organelle associated with it (or the option of no organelles) make it choose to add no organelles:
+    if organelle_prediction < 0 or organelle_prediction > 12:
+        organelle_prediction = 12
+        print("Unexpected value, defaulting to:", organelle_prediction) # DEBUG
+    else:
+        Thrive_AI.select_part(organelle_prediction)
+        time.sleep(1)
+        num_placed = Thrive_AI.add_part(num_placed)
+        current_organelles[organelle_prediction] += 1
     Thrive_AI.to_active_stage()
-    time.sleep(5)
 
 Thrive_AI.to_editor() # So it ends in the editor.
 
